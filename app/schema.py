@@ -1,15 +1,20 @@
 from pydantic import BaseModel
 import datetime
+import uuid
 from typing import Literal
+from app.custom_types import ROLE
 
 
-# Requests
+# =====================
+# =       Requests    =
+# =====================
+
+# Advertisement requests
 
 class CreateAdvertisementRequest(BaseModel):
     title: str
     description: str
     price: float
-    author: str
     status_open: bool
 
 
@@ -20,10 +25,38 @@ class UpdateAdvertisementRequest(BaseModel):
     status_open: bool | None = None
 
 
-# Responses
 
-class CreateAdvertisementResponse(BaseModel):
+# User requests
+
+class LoginRequest(BaseModel):
+    name: str
+    password: str
+
+
+class CreateUserRequest(BaseModel):
+    name: str
+    password: str
+    role: ROLE
+
+
+class UpdateUserRequest(BaseModel):
+    name: str | None = None
+    password: str | None = None
+    role: ROLE | None = None
+
+
+# =====================
+# =       Responses   =
+# =====================
+
+# Advertisement responses
+
+class IdResponse(BaseModel):
     id: int
+
+
+class CreateAdvertisementResponse(IdResponse):
+    pass
 
 
 class GetAdvertisementResponse(BaseModel):
@@ -33,6 +66,7 @@ class GetAdvertisementResponse(BaseModel):
     author: str
     creation_date: datetime.datetime
     status_open: bool
+    user_id: int
 
 
 class SearchAdvertisementResponse(BaseModel):
@@ -48,4 +82,27 @@ class UpdateAdvertisementResponse(SuccessResponse):
 
 
 class DeleteAdvertisementResponse(SuccessResponse):
+    pass
+
+
+# User responses
+
+class LoginResponse(BaseModel):
+    token: uuid.UUID
+
+
+class CreateUserResponse(IdResponse):
+    pass
+
+
+class GetUserResponse(BaseModel):
+    name: str
+    role: ROLE
+
+
+class UpdateUserResponse(SuccessResponse):
+    pass
+
+
+class DeleteUserResponse(SuccessResponse):
     pass

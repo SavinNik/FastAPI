@@ -12,6 +12,12 @@ async def add_item(session: AsyncSession, item: ORM_OBJ):
     except IntegrityError:
         raise HTTPException(409, "Item already exists")
 
+async def update_item(session: AsyncSession, item: ORM_OBJ, update_data: dict):
+    for field, value in update_data.items():
+        setattr(item, field, value)
+    await session.commit()
+    return item
+
 async def get_item_by_id(session: AsyncSession, orm_cls: ORM_CLS, item_id: int):
     orm_obj = await session.get(orm_cls, item_id)
     if orm_obj is None:
